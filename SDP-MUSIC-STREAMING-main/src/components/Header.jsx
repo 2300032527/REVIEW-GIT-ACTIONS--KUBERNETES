@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import axios from './config';
+import axios from 'axios'; // use axios directly
 import './Header.css';
 
 const Header = () => {
@@ -10,22 +10,20 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
+  // Use VITE env variable for API base URL
+  const API_BASE_URL = import.meta.env.VITE_API_URL;
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
       axios
-        .get('/user', {
-          headers: { 'x-access-token': token }
-        })
+        .get(`${API_BASE_URL}/user`, { headers: { 'x-access-token': token } })
         .then(res => setRole(res.data.role))
         .catch(() => localStorage.clear());
     }
   }, []);
 
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
-
+  const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
   const toggleMenu = () => setMenuOpen(!menuOpen);
 
   const handleClickOutside = (event) => {
@@ -46,41 +44,11 @@ const Header = () => {
 
   return (
     <header className="header">
-      <button
-        className="hamburger"
-        onClick={toggleMenu}
-        aria-label="Toggle navigation menu"
-      >
-        ☰
-      </button>
+      <button className="hamburger" onClick={toggleMenu} aria-label="Toggle navigation menu">☰</button>
       <div className={`nav-left ${menuOpen ? 'open' : ''}`}>
-        <button
-          className={`nav-btn ${isActive('/')}`}
-          onClick={() => {
-            setMenuOpen(false);
-            navigate('/');
-          }}
-        >
-          Home
-        </button>
-        <button
-          className={`nav-btn ${isActive('/genres')}`}
-          onClick={() => {
-            setMenuOpen(false);
-            navigate('/genres');
-          }}
-        >
-          Genres
-        </button>
-        <button
-          className={`nav-btn ${isActive('/playlists')}`}
-          onClick={() => {
-            setMenuOpen(false);
-            navigate('/playlists');
-          }}
-        >
-          Playlists
-        </button>
+        <button className={`nav-btn ${isActive('/')}`} onClick={() => { setMenuOpen(false); navigate('/'); }}>Home</button>
+        <button className={`nav-btn ${isActive('/genres')}`} onClick={() => { setMenuOpen(false); navigate('/genres'); }}>Genres</button>
+        <button className={`nav-btn ${isActive('/playlists')}`} onClick={() => { setMenuOpen(false); navigate('/playlists'); }}>Playlists</button>
       </div>
       <div className="nav-right">
         <div className="profile">
@@ -91,33 +59,12 @@ const Header = () => {
             aria-haspopup="true"
             aria-label="User profile menu"
           >
-            {role}
-            <span className="dropdown-arrow">▼</span>
+            {role}<span className="dropdown-arrow">▼</span>
           </button>
           {dropdownOpen && (
             <ul className="dropdown" role="menu">
-              {/* ✅ Admin Login Page navigation */}
-              <li
-                role="menuitem"
-                tabIndex="0"
-                onClick={() => {
-                  setDropdownOpen(false);
-                  navigate('/admin-login'); // AdminLogin.jsx route
-                }}
-              >
-                Admin
-              </li>
-              <li
-                role="menuitem"
-                tabIndex="0"
-                onClick={() => {
-                  setDropdownOpen(false);
-                  localStorage.clear();
-                  navigate('/login');
-                }}
-              >
-                Log Out
-              </li>
+              <li role="menuitem" tabIndex="0" onClick={() => { setDropdownOpen(false); navigate('/admin-login'); }}>Admin</li>
+              <li role="menuitem" tabIndex="0" onClick={() => { setDropdownOpen(false); localStorage.clear(); navigate('/login'); }}>Log Out</li>
             </ul>
           )}
         </div>
