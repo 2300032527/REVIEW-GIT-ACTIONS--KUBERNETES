@@ -3,6 +3,9 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import "./Auth.css";
 
+// Read API URL from .env or fallback to localhost:8080
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:8080";
+
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -12,7 +15,7 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/api/login", {
+      const response = await axios.post(`${API_URL}/api/login`, {
         username,
         password,
       });
