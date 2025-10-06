@@ -9,10 +9,13 @@ const Login = () => {
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
+  // Use API URL from .env
+  const API_URL = import.meta.env.VITE_API_URL;
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:8080/api/login", {
+      const response = await axios.post(`${API_URL}/api/login`, {
         username,
         password,
       });
