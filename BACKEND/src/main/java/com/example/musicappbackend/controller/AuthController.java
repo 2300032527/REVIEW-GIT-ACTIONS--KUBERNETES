@@ -10,14 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(
-        origins = {
-                "http://localhost:5173",
-                "http://localhost:3000",
-                "http://localhost:2025",
-                "http://127.0.0.1:2025"
-        }
-)
+@CrossOrigin(origins = "*") // TEMP: Allow all frontends
 public class AuthController {
 
     private final UserService userService;
@@ -30,8 +23,7 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<User> signup(@RequestBody User user) {
         System.out.println("🔥 /api/signup called!");
-        User savedUser = userService.saveUser(user);
-        return ResponseEntity.ok(savedUser);
+        return ResponseEntity.ok(userService.saveUser(user));
     }
 
     // Login endpoint
@@ -51,11 +43,11 @@ public class AuthController {
         }
     }
 
-    // Get all users
+    // Get all users - PUBLIC for testing 💥
     @GetMapping("/users")
+    @CrossOrigin(origins = "*") // TEMP: Allow without auth
     public ResponseEntity<List<User>> getAllUsers() {
-        System.out.println("Hello users");
-        List<User> users = userService.getAllUsers();
-        return ResponseEntity.ok(users);
+        System.out.println("📌 PUBLIC: /api/users called!");
+        return ResponseEntity.ok(userService.getAllUsers());
     }
 }
