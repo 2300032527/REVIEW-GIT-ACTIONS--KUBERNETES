@@ -23,18 +23,22 @@ public class AuthController {
     // Signup endpoint
     @PostMapping("/signup")
     public ResponseEntity<User> signup(@RequestBody User user) {
-        // default role "user" will be set automatically
+        System.out.println("🔥 /api/signup called!");
         return ResponseEntity.ok(userService.saveUser(user));
     }
 
-    // Login endpoint – now allows all users (no admin check)
+    // Login endpoint
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User loginData) {
+        System.out.println("🔐 /api/login called!");
+
         User user = userService.validateUser(loginData.getUsername(), loginData.getPassword());
 
         if (user != null) {
-            return ResponseEntity.ok(user); // success
+            System.out.println("✔ Login Success!");
+            return ResponseEntity.ok(user);
         } else {
+            System.out.println("❌ Login Failed!");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Invalid username or password");
         }
@@ -43,6 +47,7 @@ public class AuthController {
     // Get all users
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
+        System.out.println("Hello users");
         return ResponseEntity.ok(userService.getAllUsers());
     }
 }
