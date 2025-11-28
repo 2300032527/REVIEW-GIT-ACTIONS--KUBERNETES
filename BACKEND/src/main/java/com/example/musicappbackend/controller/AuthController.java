@@ -10,8 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000"})
-
+@CrossOrigin(origins = "*") // TEMP Allowed all
 public class AuthController {
 
     private final UserService userService;
@@ -20,29 +19,31 @@ public class AuthController {
         this.userService = userService;
     }
 
-    // Signup endpoint
     @PostMapping("/signup")
     public ResponseEntity<User> signup(@RequestBody User user) {
-        // default role "user" will be set automatically
+        System.out.println("🔥 /api/signup called!");
         return ResponseEntity.ok(userService.saveUser(user));
     }
 
-    // Login endpoint – now allows all users (no admin check)
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User loginData) {
+        System.out.println("🔐 /api/login called!");
+
         User user = userService.validateUser(loginData.getUsername(), loginData.getPassword());
 
         if (user != null) {
-            return ResponseEntity.ok(user); // success
+            System.out.println("✔ Login Success!");
+            return ResponseEntity.ok(user);
         } else {
+            System.out.println("❌ Login Failed!");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("Invalid username or password");
         }
     }
 
-    // Get all users
     @GetMapping("/users")
     public ResponseEntity<List<User>> getAllUsers() {
+        System.out.println("📌 PUBLIC: /api/users called!");
         return ResponseEntity.ok(userService.getAllUsers());
     }
 }

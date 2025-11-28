@@ -10,16 +10,16 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
         http
-            .csrf().disable()
-            .cors() // Enable CORS
-            .and()
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/signup", "/api/login").permitAll()
-                .anyRequest().authenticated()
-            )
-            .formLogin().disable()  // 🔑 Disable form login if you are using frontend login
-            .httpBasic().disable(); // 🔑 Disable HTTP Basic → popup stop
+                .csrf(csrf -> csrf.disable())
+                .cors(cors -> {})
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/signup", "/api/login", "/api/users").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .formLogin(form -> form.disable())
+                .httpBasic(httpBasic -> httpBasic.disable());
 
         return http.build();
     }
